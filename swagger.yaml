@@ -1,0 +1,259 @@
+
+openapi: 3.0.0
+info:
+  title: Book API
+  description: API pro správu knihovny
+  version: 1.0.0
+  contact:
+    email: your.email@example.com
+
+servers:
+  - url: http://localhost:3000
+    description: Lokální vývojový server
+  - url: https://bookshop-mern-frontend.vercel.app/
+    description: Produkční server
+
+tags:
+  - name: Books
+    description: Operace s knihami
+
+components:
+  schemas:
+    Book:
+      type: object
+      required:
+        - title
+        - author
+      properties:
+        _id:
+          type: string
+          description: Automaticky generované MongoDB ID
+          example: "507f1f77bcf86cd799439011"
+        title:
+          type: string
+          description: Název knihy
+          example: "1984"
+        author:
+          type: string
+          description: Autor knihy
+          example: "George Orwell"
+      example:
+        _id: "507f1f77bcf86cd799439011"
+        title: "1984"
+        author: "George Orwell"
+    
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: "Chybová zpráva"
+    
+    Success:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+        data:
+          type: object
+
+paths:
+  /api/books:
+    get:
+      tags:
+        - Books
+      summary: Získat seznam všech knih
+      description: Vrátí seznam všech knih v databázi
+      responses:
+        '200':
+          description: Úspěšná operace
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Book'
+        '500':
+          description: Chyba serveru
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    
+    post:
+      tags:
+        - Books
+      summary: Vytvořit novou knihu
+      description: Přidá novou knihu do databáze
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - author
+              properties:
+                title:
+                  type: string
+                  example: "Nová kniha"
+                author:
+                  type: string
+                  example: "Jan Novák"
+      responses:
+        '201':
+          description: Kniha byla úspěšně vytvořena
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "saved book"
+                  data:
+                    $ref: '#/components/schemas/Book'
+        '500':
+          description: Chyba serveru
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/books/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID knihy
+        schema:
+          type: string
+        example: "507f1f77bcf86cd799439011"
+    
+    get:
+      tags:
+        - Books
+      summary: Získat detail knihy
+      description: Vrátí detail konkrétní knihy podle ID
+      responses:
+        '200':
+          description: Úspěšná operace
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Book'
+        '404':
+          description: Kniha nebyla nalezena
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Chyba serveru
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    
+    put:
+      tags:
+        - Books
+      summary: Upravit knihu
+      description: Upraví existující knihu podle ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: "Upravený název"
+                author:
+                  type: string
+                  example: "Upravený autor"
+      responses:
+        '200':
+          description: Kniha byla úspěšně upravena
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "book updated"
+                  data:
+                    $ref: '#/components/schemas/Book'
+        '404':
+          description: Kniha nebyla nalezena
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Chyba serveru
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    
+    delete:
+      tags:
+        - Books
+      summary: Smazat knihu
+      description: Smaže knihu podle ID
+      responses:
+        '200':
+          description: Kniha byla úspěšně smazána
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "book deleted"
+        '404':
+          description: Kniha nebyla nalezena
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Chyba serveru
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
