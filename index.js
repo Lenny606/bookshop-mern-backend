@@ -21,7 +21,7 @@ app.use(cors({
 }))
 
 //routes
-import booksRoutes from "./books/book.route.js";
+import booksRoutes from "./routes/book.route.js";
 import ordersRoutes from "./orders/order.route.js";
 import userRoutes from "./users/user.route.js";
 import adminStatsRoutes from "./stats/admin.stats.route.js";

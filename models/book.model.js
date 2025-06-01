@@ -29,10 +29,31 @@ const bookSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    slug: {
+        type: String,
+        required: true
+    },
+    publisher : {
+        type: String,
+        required: false
+    },
     createdAt: {
         type: Date,
         required: true
+    },
+    ISBN: {
+        type: String,
+        required: true
+    },
+    pages : {
+        type: Number,
+        required: false
+    },
+    notes: {
+        type: Array,
+        required: false
     }
+
 }, {timestamps: true})
 
 const Book = mongoose.model('Book', bookSchema)

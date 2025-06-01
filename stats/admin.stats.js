@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import Order from "../orders/order.model.js";
-import Book from "../books/book.model.js";
+import Book from "../models/book.model.js";
 import express from 'express';
 
 // Function to calculate admin stats
